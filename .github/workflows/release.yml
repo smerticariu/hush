@@ -16,6 +16,8 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      HAS_CWS: ${{ secrets.CWS_REFRESH_TOKEN != '' }}
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
@@ -39,7 +41,8 @@ jobs:
           name: hush
           path: release/*.zip
       - name: Publish
-        if: github.event_name == 'schedule' || inputs.publish
+        # skipped until the Chrome Web Store secrets exist (see PUBLISHING.md)
+        if: env.HAS_CWS == 'true' && (github.event_name == 'schedule' || inputs.publish)
         env:
           CWS_PUBLISHER_ID: ${{ secrets.CWS_PUBLISHER_ID }}
           CWS_EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
