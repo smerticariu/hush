@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hush</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="layout">
+    <nav class="side" aria-label="Sections">
+      <div class="logo">
+        <img src="../icons/48.png" alt="" width="30" height="30">
+        <span>Hush</span>
+      </div>
+      <a href="#overview" data-tab="overview">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19h3v-7H5zm5.5 0h3V5h-3zM16 19h3v-10h-3z"/></svg>Overview</a>
+      <a href="#protection" data-tab="protection">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5z"/></svg>Protection</a>
+      <a href="#paused" data-tab="paused">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zm6.5 0H17v14h-3.5z"/></svg>Paused sites</a>
+      <a href="#filters" data-tab="filters">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>My filters</a>
+      <a href="#about" data-tab="about">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/></svg>About</a>
+    </nav>
+
+    <main>
+      <!-- ============================================================ overview -->
+      <section id="overview" class="page">
+        <div class="welcome" id="welcome" hidden>
+          <div>
+            <h2>Hush is on 🎉</h2>
+            <p>It's already blocking ads and trackers. Pin it to your toolbar to see what it blocks on every page:
+              click the puzzle icon <span class="kbd">🧩</span> next to the address bar, then the pin <span class="kbd">📌</span> next to Hush.</p>
+          </div>
+          <button class="ghost" id="welcomeClose" aria-label="Dismiss">✕</button>
+        </div>
+
+        <header class="page-head">
+          <div>
+            <h1>Overview</h1>
+            <p class="sub" id="since"></p>
+          </div>
+        </header>
+
+        <div class="hero-tile">
+          <div>
+            <span class="hero-num" id="totalNum">0</span>
+            <span class="hero-label">ads, trackers and threats blocked</span>
+          </div>
+          <div class="hero-saved">
+            <div><span class="saved-num" id="timeSaved">0 s</span><span class="saved-label">of loading time saved</span></div>
+            <div><span class="saved-num" id="dataSaved">0 MB</span><span class="saved-label">of data saved</span></div>
+          </div>
+        </div>
+
+        <div class="tiles">
+          <div class="tile"><span class="dot ads"></span><span class="tile-num" id="adsNum">0</span><span class="tile-label">Ads</span></div>
+          <div class="tile"><span class="dot trackers"></span><span class="tile-num" id="trackersNum">0</span><span class="tile-label">Trackers</span></div>
+          <div class="tile"><span class="dot threats"></span><span class="tile-num" id="threatsNum">0</span><span class="tile-label">Threats</span></div>
+          <div class="tile"><span class="dot cleaned"></span><span class="tile-num" id="cleanedNum">0</span><span class="tile-label">Links cleaned</span></div>
+        </div>
+
+        <div class="card chart-card">
+          <div class="card-head">
+            <h3>Last 30 days</h3>
+            <div class="legend" aria-hidden="true">
+              <span><i class="dot ads"></i>Ads</span>
+              <span><i class="dot trackers"></i>Trackers</span>
+            </div>
+            <button class="link" id="tableToggle" aria-pressed="false">Show as table</button>
+          </div>
+          <div class="chart" id="chart" role="img" aria-label="Ads and trackers blocked per day over the last 30 days"></div>
+          <div class="tooltip" id="tip" hidden></div>
+          <div class="chart-table" id="chartTable" hidden></div>
+        </div>
+
+        <div class="two">
+          <div class="card">
+            <div class="card-head"><h3>Sites with the most blocking</h3></div>
+            <ol class="rank" id="topSites"></ol>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Most blocked domains</h3></div>
+            <ol class="rank" id="topDomains"></ol>
+          </div>
+        </div>
+
+        <div class="reset-row">
+          <p class="note">Stats stay on this computer and never leave your browser. Time and data saved are estimates
+            (about 40 ms and 25 KB per blocked request).</p>
+          <button class="ghost danger" id="reset">Reset stats</button>
+        </div>
+      </section>
+
+      <!-- ============================================================ protection -->
+      <section id="protection" class="page" hidden>
+        <header class="page-head"><div><h1>Protection</h1><p class="sub">Choose what Hush blocks. Changes apply to new pages.</p></div></header>
+        <div class="card list" id="groups"></div>
+      </section>
+
+      <!-- ============================================================ paused -->
+      <section id="paused" class="page" hidden>
+        <header class="page-head"><div><h1>Paused sites</h1><p class="sub">Hush doesn't block anything on these sites. You can also pause a site from the toolbar icon.</p></div></header>
+        <form class="add-row" id="addSite">
+          <input type="text" id="siteInput" placeholder="example.com" autocomplete="off" spellcheck="false" aria-label="Site to pause">
+          <button class="primary" type="submit">Pause site</button>
+        </form>
+        <div class="card list">
+          <ul class="sites" id="sites"></ul>
+          <p class="empty" id="sitesEmpty">No paused sites. Hush is working everywhere.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================ filters -->
+      <section id="filters" class="page" hidden>
+        <header class="page-head"><div><h1>My filters</h1><p class="sub">One filter per line, in uBlock Origin / Adblock Plus syntax. Elements you hide with “Hide an element” show up here too.</p></div></header>
+        <div class="card">
+          <textarea id="filtersText" spellcheck="false" placeholder="||ads.example.com^&#10;example.com##.top-banner&#10;@@||good-site.com^$document"></textarea>
+          <div class="bar">
+            <span class="status" id="filtersStatus"></span>
+            <button id="save" class="primary">Save</button>
+          </div>
+        </div>
+        <details class="card help">
+          <summary>Syntax cheat sheet</summary>
+          <dl>
+            <dt><code>||ads.example.com^</code></dt><dd>Block every request to that domain</dd>
+            <dt><code>example.com##.banner</code></dt><dd>Hide elements matching a CSS selector on one site</dd>
+            <dt><code>##.sponsored</code></dt><dd>Hide them on every site</dd>
+            <dt><code>example.com##div:has-text(Sponsored)</code></dt><dd>Hide elements that contain some text</dd>
+            <dt><code>@@||example.com^$document</code></dt><dd>Allow everything on a site</dd>
+            <dt><code>! a comment</code></dt><dd>Ignored</dd>
+          </dl>
+        </details>
+      </section>
+
+      <!-- ============================================================ about -->
+      <section id="about" class="page" hidden>
+        <header class="page-head"><div><h1>About Hush</h1><p class="sub" id="build"></p></div></header>
+        <div class="card prose">
+          <p><b>Hush collects nothing.</b> There is no server, no analytics and no account. Blocking happens inside Chrome,
+            and your stats never leave this computer. Your settings sync between your own computers through Chrome Sync.</p>
+          <p>Hush uses the same community filter lists as the best blockers: EasyList, EasyPrivacy, the uBlock Origin lists,
+            Brave's public lists and ROList, plus its own fixes. The lists are refreshed every few days with new versions.</p>
+          <p class="links">
+            <a href="../PRIVACY.md" target="_blank">Privacy policy</a>
+            <a href="../NOTICES.md" target="_blank">Lists and licenses</a>
+            <a href="../LICENSE" target="_blank">GPL-3.0</a>
+            <span id="sourceLink"></span>
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="dashboard.js" type="module"></script>
+</body>
+</html>

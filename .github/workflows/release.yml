@@ -1,0 +1,49 @@
+# Automated build: fresh lists every 3 days, tests, then publish to the Chrome Web Store.
+# Required secrets: CWS_PUBLISHER_ID, CWS_EXTENSION_ID, CWS_CLIENT_ID,
+# CWS_CLIENT_SECRET, CWS_REFRESH_TOKEN (see PUBLISHING.md).
+name: Release
+
+on:
+  schedule:
+    - cron: '17 4 */3 * *'
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Publish to the Chrome Web Store'
+        type: boolean
+        default: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: git clone --depth 1 https://github.com/gorhill/uBlock vendor/uBlock
+      - run: npx playwright install --with-deps chromium
+      - name: Chromium path for tests
+        run: echo "CHROME_PATH=$(node -e "import('playwright').then((p) => console.log(p.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - run: node tools/fetch-lists.mjs
+      - run: npm run build
+      - run: npm test
+      - name: Package
+        id: pack
+        run: echo "zip=$(node tools/pack.mjs)" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hush
+          path: release/*.zip
+      - name: Publish
+        if: github.event_name == 'schedule' || inputs.publish
+        env:
+          CWS_PUBLISHER_ID: ${{ secrets.CWS_PUBLISHER_ID }}
+          CWS_EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
+          CWS_CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
+          CWS_CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
+          CWS_REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
+        run: node tools/publish.mjs "${{ steps.pack.outputs.zip }}"

@@ -1,0 +1,9 @@
+! Title: Hush — own rules
+! First-party ads that the public lists don't catch.
+
+! gsp.ro: betting ad takeover set as the #root background + "by vbet" logo
+gsp.ro###root.main-container:style(background-image: none !important)
+gsp.ro##.main_branding_background
+gsp.ro##.img-branding-topstory
+||gsp.ro/usr/widgets/*-br-hp.$image
+||gsp.ro/plugins/brandings/$image

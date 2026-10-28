@@ -1,0 +1,157 @@
+:root {
+  --bg: #ffffff;
+  --fg: #111827;
+  --muted: #6b7280;
+  --line: #ececf0;
+  --soft: #f6f6f8;
+  --accent: #f97316;
+  --accent-soft: #fff1e6;
+  --ads: #ea580c;
+  --trackers: #4f46e5;
+  --threats: #dc2626;
+  --off: #9ca3af;
+  --off-soft: #f3f4f6;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #18181b;
+    --fg: #f4f4f5;
+    --muted: #a1a1aa;
+    --line: #2a2a2f;
+    --soft: #222226;
+    --accent-soft: #3a2314;
+    --trackers: #818cf8;
+    --threats: #f87171;
+    --off: #71717a;
+    --off-soft: #27272a;
+  }
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  width: 320px;
+  background: var(--bg);
+  color: var(--fg);
+  font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+}
+.brand { font-weight: 700; font-size: 16px; flex: 1; letter-spacing: -.01em; }
+.icon-btn { color: var(--muted); display: flex; padding: 6px; border-radius: 8px; }
+.icon-btn:hover { color: var(--fg); background: var(--soft); }
+
+main { padding: 0 14px 14px; display: grid; gap: 12px; }
+
+.hero {
+  text-align: center;
+  padding: 18px 12px 14px;
+  border-radius: 16px;
+  background: var(--accent-soft);
+  transition: background .2s;
+}
+.badge {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 8px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  background: var(--bg);
+  box-shadow: 0 4px 14px rgba(249, 115, 22, .25);
+}
+.status { margin: 0; font-weight: 700; font-size: 15px; }
+.host {
+  margin: 2px 0 0;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+body.paused .hero, body.inactive .hero { background: var(--off-soft); }
+body.paused .badge, body.inactive .badge { color: var(--off); box-shadow: none; }
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+.toggle-text { flex: 1; display: grid; }
+.toggle-title { font-weight: 600; }
+.toggle-sub { color: var(--muted); font-size: 12px; }
+.toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.track {
+  width: 42px;
+  height: 24px;
+  flex: none;
+  border-radius: 12px;
+  background: var(--off);
+  position: relative;
+  transition: background .15s;
+}
+.thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform .15s;
+}
+.toggle input:checked + .track { background: var(--accent); }
+.toggle input:checked + .track .thumb { transform: translateX(18px); }
+.toggle input:focus-visible + .track { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.page-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.stat {
+  display: grid;
+  gap: 2px;
+  padding: 10px 8px;
+  border-radius: 12px;
+  background: var(--soft);
+  text-align: center;
+}
+.stat .num { font-size: 22px; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.stat .label { color: var(--muted); font-size: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
+.stat .label::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.stat.ads .label::before { background: var(--ads); }
+.stat.trackers .label::before { background: var(--trackers); }
+.stat.threats .label::before { background: var(--threats); }
+
+.totals { margin: 0; color: var(--muted); text-align: center; font-size: 12px; }
+.totals b { color: var(--fg); font-weight: 600; }
+
+.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font: inherit;
+  font-weight: 600;
+  padding: 9px 6px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+  text-decoration: none;
+}
+.action:hover:not(:disabled) { background: var(--soft); }
+.action:disabled { opacity: .45; cursor: default; }
+
+body.inactive .toggle, body.inactive .page-stats { opacity: .45; pointer-events: none; }
+body.paused .page-stats { opacity: .45; }

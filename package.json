@@ -1,0 +1,29 @@
+{
+  "name": "hush",
+  "version": "1.0.0",
+  "description": "Blocks ads, trackers, cookie banners and dangerous sites in Chrome. Free, open source, collects nothing.",
+  "scripts": {
+    "fetch": "node tools/fetch-lists.mjs",
+    "build": "node tools/build.mjs && node tools/validate.mjs",
+    "update": "git -C vendor/uBlock pull --depth 1 && node tools/fetch-lists.mjs && node tools/build.mjs && node tools/validate.mjs",
+    "bench": "node tools/bench.mjs",
+    "test:youtube": "node tools/test-youtube.mjs",
+    "test:tester": "node tools/test-adblock-tester.mjs",
+    "icons": "node tools/icons.mjs",
+    "test": "node tools/test-load.mjs && node tools/test-functional.mjs",
+    "pack": "node tools/pack.mjs",
+    "store-shots": "node tools/store-shots.mjs"
+  },
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "devDependencies": {
+    "acorn": "^8.19.0",
+    "playwright": "^1.64.1"
+  },
+  "private": true,
+  "homepage": "https://github.com/smerticariu/hush",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smerticariu/hush.git"
+  }
+}
